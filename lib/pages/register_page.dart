@@ -1,8 +1,11 @@
-import 'package:casa_club/widgets/boton_azul.dart';
-import 'package:casa_club/widgets/labels.dart';
-import 'package:casa_club/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../services/auth_service.dart';
+import '../widgets/boton_azul.dart';
+import '../widgets/labels.dart';
+import '../widgets/logo.dart';
+import '../helpers/mostrar_alerta.dart';
 import '../widgets/custom_input.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -49,6 +52,8 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50.0),
@@ -73,11 +78,24 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           BotonAzul(
-            text: 'Ingrese',
-            onPressed: () {
-              print(emailCtrl.text);
-              print(passCtrl.text);
-            },
+            text: 'Crear Cuenta',
+            onPressed: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+
+                    final registerOk = await authService.register(
+                        nameCtrl.text.trim(),
+                        emailCtrl.text.trim(),
+                        passCtrl.text.trim());
+
+                    if (registerOk == true) {
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+                    } else {
+                      mostrarAlerta(context, 'registro incorrecto',
+                          registerOk);
+                    }
+                  },
           ),
         ],
       ),
