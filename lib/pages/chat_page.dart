@@ -91,6 +91,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 style: TextStyle(color: Colors.black87, fontSize: 10.0))
           ],
         ),
+        iconTheme: IconThemeData(
+          color: Colors.black54
+        ),
       ),
       body: Container(
           child: Column(
